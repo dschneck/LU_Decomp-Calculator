@@ -1,0 +1,3 @@
+[submodule "RREF-calculator"]
+	path = RREF-calculator
+	url = https://github.com/dschneck/RREF-calculator
