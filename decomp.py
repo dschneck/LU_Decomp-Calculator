@@ -15,7 +15,9 @@ if __name__ == "__main__":
 	x.printMatrix()
 	y = RREF(x)
 
-	if y.flag:
+	'''
+	if getattr(y, 'flag') == True:
 		print("I had to interchange")
 	else:
 		print("I did not have to interchange")
+	'''
