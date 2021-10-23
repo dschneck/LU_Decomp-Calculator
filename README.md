@@ -1,6 +1,6 @@
-# LU_Decomp-Calculator
+# Description
 
-2. (2pts)  Write a program to do the same job as (or better) the website  does: https://www.emathhelp.net/calculators/linear-algebra/lu-decomposition-calculator/ (Links to an external site.)
+(2pts)  Write a program to do the same job as (or better) the website  does: https://www.emathhelp.net/calculators/linear-algebra/lu-decomposition-calculator/ (Links to an external site.)
 
 Input: a square matrix 
 
@@ -16,5 +16,11 @@ Need presentation: Yes, and time is limited to 8 mins.
 
 Due: Oct 25
 
-# Notes:
+## TODO ##
+- [] algorithm for finding determinant of n x n matrix
+- [] Check determinant of principal leading submatrices
+- [] algorithm for matrix multiplication
+- [x] generate n x n identity matrix
+- [] represent elementary row operations with matrices
+- [] validate by multplying L and U, the answer should be A
 
