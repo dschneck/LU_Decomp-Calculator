@@ -19,7 +19,7 @@ Due: Oct 25
 ## TODO ##
 - [] algorithm for finding determinant of n x n matrix
 - [] Check determinant of principal leading submatrices
-- [] algorithm for matrix multiplication
+- [x] algorithm for matrix multiplication
 - [x] generate n x n identity matrix
 - [] represent elementary row operations with matrices
 - [] algorithm to invert elementary row operations
