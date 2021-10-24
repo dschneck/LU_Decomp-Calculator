@@ -22,36 +22,68 @@ def generateEROMatrix(op, m, scalar=0):
 				ret[i][j] *= scalar return ret
 
 '''
-def subMatrix(A, x, y):
-	if A.m == 2:
-		return A
-	a = copy.deepcopy(A.matrix)
+def removeRow(a, size, x):
+	b = copy.deepcopy(a)
 	a = a[0:x]
 
-	if x+1 < A.m:
-		b = copy.deepcopy(A.matrix)[x+1:]
+	if x+1 < size:
+		b = b[x+1:]
 		a += b
+	return a
 
+def removeCol(a, x):
 	for i in range(len(a)):
-		a[i].pop(y)
+		a[i].pop(x)
+	return a
+
+def subMatrix(A, x, y):
+	a = copy.deepcopy(A.matrix)
+	a = removeRow(a,len(a), x)
+	a = removeCol(a, y)
 	return Matrix(a, A.m-1, A.n-1)
 
+def verifyLeadingMinors(A):
+	maxMinorSize = max(A.m, A.n) - abs((A.m-A.n))
+	for i in range(maxMinorSize):
+		#if i == 0:
+			#if A.matrix[0][0] == 0:
+				#return False
+			#else:
+				#continue
+
+		tmpMatrix = copy.deepcopy(A.matrix)
+		size = len(tmpMatrix)
+
+		while size > i+1:
+			removeRow(tmpMatrix, size, size-1)
+			size -= 1
+
+		size = len(tmpMatrix[0])
+
+		while size > i+1:
+			removeCol(tmpMatrix, size-1)
+			size -= 1
+		tmp = Matrix(tmpMatrix, i+1, i+1)
+		if determinant(tmp) == 0:
+			return False
+		
+	return True
+	'''
+	for i in range(A.m - abs(A.m - A.n)):
+		if (determinant(subMatrix(A,i,i)) == 0):
+			return False
+	return True
+	'''
+
 def determinant(A):
+	if A.n == 1:
+		return A.matrix[0][0]
 	if A.n == 2:
-		print("got here")
-		val = A.matrix[0][0] * A.matrix[1][1] - A.matrix[0][1] * A.matrix[1][0]
-		print("The det is: ", val)
-		return val
+		return A.matrix[0][0] * A.matrix[1][1] - A.matrix[0][1] * A.matrix[1][0]
 
 	det = 0
 	for i in range(A.n):
-		print("matrix is: ")
-		A.printMatrix()
-		print(i, ": is the column")
 		tmp = subMatrix(A, 0, i)
-		print("Submatrix is: ")
-		tmp.printMatrix()
-		#print("Det is: ", det)
 		det += pow(-1, i+2) * A.matrix[0][i] * determinant(tmp) 
 
 	return det
@@ -122,8 +154,11 @@ if __name__ == "__main__":
 	product = matrixMult(a,b)
 	product.printMatrix()
 	'''
+	f = Matrix([[1,2,4,0],[3,8,14,0],[2,6,13,0]],3,4)
 	x = Matrix([[1,2,3],[4,5,6], [7,8,9]], 3, 3)
 	z = Matrix([[1,2,3],[2,4,5],[1,3,4]], 3, 3)
 	#y = Matrix([[1,0,0,0],[0,2,0,0],[0,0,3,0],[0,0,0,4]],4,4)
-	y = Matrix([[2,3],[2,2]],2,2)
-	print(determinant(z))
+	y = Matrix([[1,2,4],[3,8,14],[2,6,13],[0,0,0]],4,3)
+	f.printMatrix()
+	print(verifyLeadingMinors(f))
+	#print(determinant(z))
