@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import copy
 from matrix import Matrix
 from rref import RREF
 '''
@@ -22,41 +23,25 @@ def generateEROMatrix(op, m, scalar=0):
 
 '''
 def subMatrix(A, x, y):
-	a = A.matrix[0:x]
+	if A.m == 2:
+		return A
+	a = copy.deepcopy(A.matrix)
+	a = a[0:x]
 
 	if x+1 < A.m:
-		b = A.matrix[x+1:A.m]
+		b = copy.deepcopy(A.matrix)[x+1:]
 		a += b
 
-	c = []
-
-	for i in range(A.m-1):
-		c.append([z for z in a[i] if id(z) is not id(a[i][y])])
-	#print(c)
-	return Matrix(c, A.m-1, A.n-1)
-'''
-	#A.printMatrix()
-	count = 0
-	a = A.matrix[0:x]
-	if x+1 < A.m:
-		b = A.matrix[x+1:A.m]
-		a += b
-
-	A.matrix = a
-	A.m -= 1
-	#A.printMatrix()
-
-	for i in range(A.m):
-		A.matrix[i] = [z for z in A.matrix[i] if id(z) is not id(A.matrix[i][y])]
-	A.n -= 1
-	#A.printMatrix()
-	return A
-	'''
+	for i in range(len(a)):
+		a[i].pop(y)
+	return Matrix(a, A.m-1, A.n-1)
 
 def determinant(A):
 	if A.n == 2:
-		det = A.matrix[0][0] * A.matrix[1][1] - A.matrix[0][1] * A.matrix[1][0]
-		return det
+		print("got here")
+		val = A.matrix[0][0] * A.matrix[1][1] - A.matrix[0][1] * A.matrix[1][0]
+		print("The det is: ", val)
+		return val
 
 	det = 0
 	for i in range(A.n):
@@ -66,7 +51,8 @@ def determinant(A):
 		tmp = subMatrix(A, 0, i)
 		print("Submatrix is: ")
 		tmp.printMatrix()
-		det += pow(-1, i+1) * determinant(tmp) 
+		#print("Det is: ", det)
+		det += pow(-1, i+2) * A.matrix[0][i] * determinant(tmp) 
 
 	return det
 	
@@ -136,10 +122,8 @@ if __name__ == "__main__":
 	product = matrixMult(a,b)
 	product.printMatrix()
 	'''
-	#x = generateIdentity(3)
 	x = Matrix([[1,2,3],[4,5,6], [7,8,9]], 3, 3)
-	y = Matrix([[1,0,0,0],[0,2,0,0],[0,0,3,0],[0,0,0,4]],4,4)
-	#subMatrix(x, int(input("1: ")), int(input("2: ")))
-	#x = invertEM(x)
-	y.printMatrix()
-	print(determinant(y))
+	z = Matrix([[1,2,3],[2,4,5],[1,3,4]], 3, 3)
+	#y = Matrix([[1,0,0,0],[0,2,0,0],[0,0,3,0],[0,0,0,4]],4,4)
+	y = Matrix([[2,3],[2,2]],2,2)
+	print(determinant(z))

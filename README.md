@@ -17,7 +17,7 @@ Need presentation: Yes, and time is limited to 8 mins.
 Due: Oct 25
 
 ## TODO ##
-- [] algorithm for finding determinant of n x n matrix
+- [x] algorithm for finding determinant of n x n matrix
 - [] Check determinant of principal leading submatrices
 - [x] algorithm for matrix multiplication
 - [x] generate n x n identity matrix
