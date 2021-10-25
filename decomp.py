@@ -1,27 +1,10 @@
 #!/usr/bin/env python3
 
 import copy
+import sys
 from matrix import Matrix
-from rref import RREF
-'''
-from enum import Enum class ERO(Enum): # Elementary Row Operations
-	SWAP = 1 # Swapping two rows
-	RSUM = 2 # Row summation
-	SCAL = 3 # Multiply by scalar
-	
-def generateEROMatrix(op, m, scalar=0):
-	ret = generateIdentity(m)
+from getInput import Input
 
-	match op:
-		case ERO.SWAP:
-			pass
-		case ERO.RSUM:
-			pass
-		case ERO.SCAL:
-			for i in range(m):
-				ret[i][j] *= scalar return ret
-
-'''
 def removeRow(a, size, x):
 	b = copy.deepcopy(a)
 	a = a[0:x]
@@ -45,7 +28,7 @@ def subMatrix(A, x, y):
 def verifyLeadingMinors(A):
 	maxMinorSize = max(A.m, A.n) - abs((A.m-A.n))
 
-	for i in range(maxMinorSize):
+	for i in range(1, maxMinorSize):
 		tmpMatrix = copy.deepcopy(A.matrix)
 		size = len(tmpMatrix)
 
@@ -66,12 +49,11 @@ def verifyLeadingMinors(A):
 
 def rowSum(n, base, target, scalar):
 	ident = generateIdentity(n)
-	ident.matrix[base-1][target-1] = scalar
+	ident.matrix[base][target] = scalar
 	return ident
 
 def rowScale(n, row, scalar):
 	ident = generateIdentity(n)
-	row -= 1
 	ident.matrix[row][row] = scalar
 	return ident
 
@@ -147,9 +129,96 @@ def matrixMult(A, B):
 			for j in range(A.m): # m
 				C[i][j] = C[i][j] + temp * B.matrix[k][j];
 	return Matrix(C, A.m, B.n)
+
+def findNonZero(A: Matrix, offset: int):
+	for i in range(offset, A.m):
+		for j in range(A.n):
+			if A.matrix[i][j] != 0:
+				return i, j
+	return -1, -1
 		
 
 if __name__ == "__main__":
+	if len(sys.argv) == 1:
+		x = Input.getInput()
+		A = Matrix(x[0], x[1], x[2])
+	else:
+		x = Input.getInput(sys.argv[1])
+		A = Matrix(x[0], x[1], x[2])
+	print("A is:")
+	A.printMatrix()
+	C = Matrix([[1,0],[-4,1]], 2, 2)
+	D = Matrix([[2,1],[8,7]], 2, 2)
+
+	matrixMult(C, D).printMatrix()
+
+	E = []
+	P = generateIdentity(A.m)
+	pivot = 0
+	k = 0
+	if True:
+		for i in range(A.m):
+			if pivot > A.n-1 or pivot > A.m-1:
+				break
+
+			row, col = findNonZero(A, pivot)
+			if (row, col) == (-1, -1): # case where there are no more nonzero values
+				break
+
+			# Interchanging
+			if (pivot, pivot) != (row, col):
+				if row == A.m-1:
+					for j in range(A.m-1, 0, -1):
+						if A.matrix[j][pivot] == 0:
+							P = matrixMult(permutation(A.n, j, row), P)
+							A =  matrixMult(P, A)
+							row = j
+							break
+				
+				else:
+					for j in range(row+1, A.m):
+						if A.matrix[j][pivot] != 0:
+							P = matrixMult(permutation(A.n, j, row), P)
+							A =  matrixMult(P, A)
+							row = j
+							break
+
+			# Row summing
+			for j in range(A.m):
+				if j != pivot and A.matrix[j][pivot] != 0 and A.matrix[pivot][pivot] != 0: 
+					E.append(rowSum(A.n, j, pivot, -1*A.matrix[j][pivot]/A.matrix[pivot][pivot]))
+					A =  matrixMult(E[k], A)
+					k += 1
+			pivot += 1
+			'''
+			print("LU Decomp exists. Calculating... ")
+			A.printMatrix()
+			for i in range(A.m):
+				# Row Summing
+				for j in range(A.m):
+					if j  != i and A.matrix[j][i] != 0 and A.matrix[i][i]:
+						E.append(rowSum(minDim, j, i, -1*A.matrix[j][i]/A.matrix[i][i]))
+						A = matrixMult(E[k], A)
+						k += 1
+		'''
+	else:
+		print("LU Decomp does not exist. Program terminated.")
+
+	print("P is: ")
+	P.printMatrix()
+	print("U is: ")
+	U = copy.deepcopy(A)
+	U.printMatrix()
+
+	L = generateIdentity(U.m)
+	size = len(E)
+	for i in range(size-1, -1, -1):
+		print("Going to multiply A with:")
+		E[i] = invertEM(E[i])
+		E[i].printMatrix()
+		L = matrixMult(E[i], L)
+	print("Finally L is:")
+	L.printMatrix()
 	'''
 	x = Matrix([[1,2,3],[4,5,6]], 2, 3)
 	y = Matrix([[1,2],[3,4],[5,6]], 3, 2)
@@ -169,6 +238,7 @@ if __name__ == "__main__":
 	print(verifyLeadingMinors(f))
 	#print(determinant(z))
 	'''
+	'''
 	x = rowSum(2, 2, 1, -4)
 	A = Matrix([[2,1],[8,7]], 2, 2)
 	x.printMatrix()
@@ -184,3 +254,4 @@ if __name__ == "__main__":
 	Z.printMatrix()
 	V = matrixMult(Z, R)
 	V.printMatrix()
+	'''
