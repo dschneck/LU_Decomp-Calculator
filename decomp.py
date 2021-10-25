@@ -147,10 +147,10 @@ if __name__ == "__main__":
 		A = Matrix(x[0], x[1], x[2])
 	print("A is:")
 	A.printMatrix()
-	C = Matrix([[1,0],[-4,1]], 2, 2)
-	D = Matrix([[2,1],[8,7]], 2, 2)
+	#C = Matrix([[1,0],[-4,1]], 2, 2)
+	#D = Matrix([[2,1],[8,7]], 2, 2)
 
-	matrixMult(C, D).printMatrix()
+	#matrixMult(C, D).printMatrix()
 
 	E = []
 	P = generateIdentity(A.m)
@@ -184,23 +184,28 @@ if __name__ == "__main__":
 							break
 
 			# Row summing
+			for j in range(i+1, A.m):
+				if A.matrix[j][i] != 0:
+					E.append(rowSum(A.n,j, pivot, -1*A.matrix[j][pivot]/A.matrix[pivot][pivot]))
+					print("new row sum")
+					E[k].printMatrix()
+					A = matrixMult(E[k], A)
+					print("Now A is:")
+					A.printMatrix()
+					k += 1
+					
+			'''
 			for j in range(A.m):
 				if j != pivot and A.matrix[j][pivot] != 0 and A.matrix[pivot][pivot] != 0: 
-					E.append(rowSum(A.n, j, pivot, -1*A.matrix[j][pivot]/A.matrix[pivot][pivot]))
-					A =  matrixMult(E[k], A)
+					E.append(rowSum(A.n,j, pivot, -1*A.matrix[j][pivot]/A.matrix[pivot][pivot]))
+					print("new row sum")
+					E[k].printMatrix()
+					A = matrixMult(E[k], A)
+					print("Now A is:")
+					A.printMatrix()
 					k += 1
 			pivot += 1
 			'''
-			print("LU Decomp exists. Calculating... ")
-			A.printMatrix()
-			for i in range(A.m):
-				# Row Summing
-				for j in range(A.m):
-					if j  != i and A.matrix[j][i] != 0 and A.matrix[i][i]:
-						E.append(rowSum(minDim, j, i, -1*A.matrix[j][i]/A.matrix[i][i]))
-						A = matrixMult(E[k], A)
-						k += 1
-		'''
 	else:
 		print("LU Decomp does not exist. Program terminated.")
 
@@ -213,45 +218,9 @@ if __name__ == "__main__":
 	L = generateIdentity(U.m)
 	size = len(E)
 	for i in range(size-1, -1, -1):
-		print("Going to multiply A with:")
+		#print("Going to multiply A with:")
 		E[i] = invertEM(E[i])
-		E[i].printMatrix()
+		#E[i].printMatrix()
 		L = matrixMult(E[i], L)
 	print("Finally L is:")
 	L.printMatrix()
-	'''
-	x = Matrix([[1,2,3],[4,5,6]], 2, 3)
-	y = Matrix([[1,2],[3,4],[5,6]], 3, 2)
-	product = matrixMult(x, y)
-	product.printMatrix()
-
-	a = Matrix([[1,2],[4,5]], 2, 2)
-	b = Matrix([[1,2],[3,4]], 2, 2)
-	product = matrixMult(a,b)
-	product.printMatrix()
-	f = Matrix([[1,2,4,0],[3,8,14,0],[2,6,13,0]],3,4)
-	x = Matrix([[1,2,3],[4,5,6], [7,8,9]], 3, 3)
-	z = Matrix([[1,2,3],[2,4,5],[1,3,4]], 3, 3)
-	#y = Matrix([[1,0,0,0],[0,2,0,0],[0,0,3,0],[0,0,0,4]],4,4)
-	y = Matrix([[1,2,4],[3,8,14],[2,6,13],[0,0,0]],4,3)
-	f.printMatrix()
-	print(verifyLeadingMinors(f))
-	#print(determinant(z))
-	'''
-	'''
-	x = rowSum(2, 2, 1, -4)
-	A = Matrix([[2,1],[8,7]], 2, 2)
-	x.printMatrix()
-	A.printMatrix()
-	U = matrixMult(x, A)
-	U.printMatrix()
-	y = rowScale(2, 1, 1/2)
-	y.printMatrix()
-	R = matrixMult(y, U)
-	R.printMatrix()
-
-	Z = permutation(2, 0, 1)
-	Z.printMatrix()
-	V = matrixMult(Z, R)
-	V.printMatrix()
-	'''
