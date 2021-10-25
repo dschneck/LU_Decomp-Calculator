@@ -44,13 +44,8 @@ def subMatrix(A, x, y):
 
 def verifyLeadingMinors(A):
 	maxMinorSize = max(A.m, A.n) - abs((A.m-A.n))
-	for i in range(maxMinorSize):
-		#if i == 0:
-			#if A.matrix[0][0] == 0:
-				#return False
-			#else:
-				#continue
 
+	for i in range(maxMinorSize):
 		tmpMatrix = copy.deepcopy(A.matrix)
 		size = len(tmpMatrix)
 
@@ -68,12 +63,24 @@ def verifyLeadingMinors(A):
 			return False
 		
 	return True
-	'''
-	for i in range(A.m - abs(A.m - A.n)):
-		if (determinant(subMatrix(A,i,i)) == 0):
-			return False
-	return True
-	'''
+
+def rowSum(n, base, target, scalar):
+	ident = generateIdentity(n)
+	ident.matrix[base-1][target-1] = scalar
+	return ident
+
+def rowScale(n, row, scalar):
+	ident = generateIdentity(n)
+	row -= 1
+	ident.matrix[row][row] = scalar
+	return ident
+
+def permutation(n, base, target):
+	ident = generateIdentity(n)
+	tmp = ident.matrix[base]
+	ident.matrix[base]  = ident.matrix[target]
+	ident.matrix[target] = tmp
+	return ident
 
 def determinant(A):
 	if A.n == 1:
@@ -153,7 +160,6 @@ if __name__ == "__main__":
 	b = Matrix([[1,2],[3,4]], 2, 2)
 	product = matrixMult(a,b)
 	product.printMatrix()
-	'''
 	f = Matrix([[1,2,4,0],[3,8,14,0],[2,6,13,0]],3,4)
 	x = Matrix([[1,2,3],[4,5,6], [7,8,9]], 3, 3)
 	z = Matrix([[1,2,3],[2,4,5],[1,3,4]], 3, 3)
@@ -162,3 +168,19 @@ if __name__ == "__main__":
 	f.printMatrix()
 	print(verifyLeadingMinors(f))
 	#print(determinant(z))
+	'''
+	x = rowSum(2, 2, 1, -4)
+	A = Matrix([[2,1],[8,7]], 2, 2)
+	x.printMatrix()
+	A.printMatrix()
+	U = matrixMult(x, A)
+	U.printMatrix()
+	y = rowScale(2, 1, 1/2)
+	y.printMatrix()
+	R = matrixMult(y, U)
+	R.printMatrix()
+
+	Z = permutation(2, 0, 1)
+	Z.printMatrix()
+	V = matrixMult(Z, R)
+	V.printMatrix()
