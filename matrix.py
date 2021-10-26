@@ -15,7 +15,7 @@ class Matrix:
 		for i in range(self.m):
 			print("|\t ", end="")
 			for j in range(self.n):
-				print(self.matrix[i][j], end="\t")
+				print(round(self.matrix[i][j],2), end="\t")
 			print("|")
 
 		print(line, "\n")
