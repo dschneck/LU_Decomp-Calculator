@@ -15,7 +15,7 @@ def removeRow(a, size, x):
 	return a
 
 def removeCol(a, x):
-	for i in range(len(a)):
+	for i in range(len(a)-1):
 		a[i].pop(x)
 	return a
 
@@ -42,9 +42,7 @@ def verifyLeadingMinors(A):
 			removeCol(tmpMatrix, size-1)
 			size -= 1
 		tmp = Matrix(tmpMatrix, i+1, i+1)
-		tmp.printMatrix()
 		if determinant(tmp) == 0:
-			print("returning false")
 			return False
 		
 	return True
@@ -147,15 +145,20 @@ if __name__ == "__main__":
 	else:
 		x = Input.getInput(sys.argv[1])
 		A = Matrix(x[0], x[1], x[2])
-	print("------------------------------------","\t\tA:","------------------------------------", sep='\n')
+	print("Original Input - A:")
 	A.printMatrix()
+	print("\n\n\n\n")
+	origColSize = A.n
+	origRowSize = A.m
 
 	E = []
 	P = generateIdentity(A.m)
 	pivot = 0
 	k = 0
 	pFlag = verifyLeadingMinors(A)
-
+	if not pFlag:
+		print("One of the principal leading minors was zero. LU Decomposition DNE.\nFinding PLU Decomposition instead...\n")
+	
 	for i in range(A.m):
 		if pivot > A.n-1 or pivot > A.m-1:
 			break
@@ -169,7 +172,8 @@ if __name__ == "__main__":
 			if row == A.m-1:
 				for j in range(A.m-1, 0, -1):
 					if A.matrix[j][pivot] == 0:
-						P = matrixMult(permutation(A.n, j, row), P)
+						#P = matrixMult(permutation(A.n, j, row), P)
+						P = permutation(A.n, j, row)
 						A = matrixMult(P, A)
 						row = j
 						break
@@ -177,36 +181,56 @@ if __name__ == "__main__":
 			else:
 				for j in range(row+1, A.m):
 					if A.matrix[j][pivot] != 0:
-						P = matrixMult(permutation(A.n, j, row), P)
+						#P = matrixMult(permutation(A.n, j, row), P)
+						P = permutation(A.n, j, row)
 						A = matrixMult(P, A)
 						row = j
 						break
+
 
 		# Row summing
 		for j in range(i+1, A.m):
 			if A.matrix[j][i] != 0 and i < A.m and A.n and A.matrix[i][i] != 0:
 				E.append(rowSum(A.n,j, i, -1*A.matrix[j][i]/A.matrix[i][i]))
-				#print("new row sum")
-				#E[k].printMatrix()
 				A = matrixMult(E[k], A)
-				#print("Now A is:")
-				A.printMatrix()
 				k += 1
 
+	for i in  range(A.m):
+		if A.matrix[i][i] == 0:
+			for j in range(A.m-1,i,-1):
+				if A.matrix[j][i] != 0:
+					P = permutation(A.m, j, i)
+					A = matrixMult(P, A)
+					
 	if not pFlag:
-		print("------------------------------------","\t\tP:","------------------------------------", sep='\n')
+		print("------------------------------------","\t\tP","------------------------------------", sep='\n')
+		while P.m != origRowSize:
+			P = subMatrix(P, P.m-1, P.n-1)
 		P.printMatrix()
+		print("\t\tX\n")
 
 	L = generateIdentity(A.m)
 	size = len(E)
 	for i in range(size-1, -1, -1):
 		E[i] = invertEM(E[i])
+		#E[i].printMatrix()
 		L = matrixMult(E[i], L)
+	while L.m != origRowSize:
+		L = subMatrix(L, L.m-1, L.n-1)
 
-	print("------------------------------------","\t\tL:","------------------------------------", sep='\n')
+	print("------------------------------------","\t\tL","------------------------------------", sep='\n')
 	L.printMatrix()
+	print("\t\tX\n")
 
-	print("------------------------------------","\t\tU:","------------------------------------", sep='\n')
+	print("------------------------------------","\t\tU","------------------------------------", sep='\n')
 	U = copy.deepcopy(A)
+
+	while U.m != origRowSize:
+		U.matrix = removeRow(U.matrix, U.m, U.m-1)
+		U.m -= 1
+
 	U.printMatrix()
+	print("\t\t=\n")
+	print("------------------------------------","\t\tA","------------------------------------", sep='\n')
+	matrixMult(P, matrixMult(L, U)).printMatrix()
 

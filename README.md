@@ -23,5 +23,5 @@ Due: Oct 25
 - [x] generate n x n identity matrix
 - [x] represent elementary row operations with matrices
 - [x] algorithm to invert elementary row operations
-- [] validate by multplying L and U, the answer should be A
+- [x] validate by multplying L and U, the answer should be A
 
